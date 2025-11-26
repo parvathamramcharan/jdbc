@@ -1,0 +1,142 @@
+package JdbcDemo;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+public class JdbcSample {
+	public static void main(String[] args) throws ClassNotFoundException, SQLException {
+		// step 1: register the driver
+		Class.forName("com.mysql.cj.jdbc.Driver");
+		
+		// step 2 : Establish the connection
+		
+		Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/assignment1","root","cdac@123");
+		
+		System.out.println("connection created");
+		
+		
+		//3 .create statement
+		
+		Statement st = con.createStatement();
+		
+		
+		//4. create  and execute query
+		String query =  "select * from dept";
+		
+		ResultSet rs = st.executeQuery(query);
+		
+		while(rs.next()){
+			String colum1 = rs.getString(1);
+			String colum2 = rs.getString("dept_no");
+			
+			System.out.println(colum1+" "+colum2);
+		
+		}
+		//5 . close connection 
+		con.close();
+		
+		
+	
+		
+	}
+   
+}
+=====================================================================================
+
+Q.2
+package JdbcDemo;
+import java.sql.*;
+public class DBConnection {
+	public Connection getDBConnection() throws Exception {
+		 Class.forName("com.mysql.cj.jdbc.Driver");	
+		 
+		 Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/student","root","cdac@123");
+		 return con;
+	}
+    
+     
+}
+======================
+
+package JdbcDemo;
+
+import java.sql.*;
+
+public class JdbcSample {
+	public static void main(String[] args) throws Exception {
+	  
+		DBConnection dbcon = new DBConnection();
+		Connection con = dbcon.getDBConnection();
+		if(con != null)
+			System.out.println("connection success");
+		Statement st = con.createStatement();
+		
+		ResultSet rs = st.executeQuery("select * from students");
+		
+		while(rs.next()) {
+			System.out.println(rs.getInt(1)+" "+rs.getString(2)+" "+rs.getString(3));
+		}
+	}
+   
+}
+
+========================================================================================================
+Q.3 CRUD  USING CreateStatement
+
+
+
+package JdbcDemo;
+
+import java.sql.*;
+
+public class JdbcSample {
+	public static void main(String[] args) throws Exception {
+	  
+	DBConnection dbcon = new DBConnection();
+	Connection con = dbcon.getDBConnection();
+	if(con != null) {
+		System.out.println("connection success");
+	}
+	Statement st = con.createStatement();
+		
+	//1.create
+	String iq = "insert into students values(1,'rohit','sharma'),(2,'virat','kohli'),(3,'ms','dhoni')";
+		
+	int x= st.executeUpdate(iq);
+	     
+	System.out.println(x+ " row(s) inserted");   // 3 row(s) inserted
+
+     
+	 //2.read
+	     
+	 ResultSet rs = st.executeQuery("select * from students");
+	     
+	 while(rs.next()) {
+	    System.out.println(rs.getInt(1)+" "+rs.getString(2)+" "+rs.getString(3));
+	 }  // outputs all table data
+	     
+	     
+	     
+	  // 3. update
+	     
+	  String uq = "update students set first_name='mahi' where id=3";
+	  int  y = st.executeUpdate(uq);
+	  System.out.println(y+"  row(s) updated");  //1  row(s) updated
+	     
+	     
+	  //4. delete
+	     
+	  String dq = " delete from students where id=3";
+	  int z =st.executeUpdate(dq);
+	  System.out.println(z + " row(s) updated");  // 1 row(s) updated		
+	}
+   
+}
+
+==================================================================================================
+
+Q4.
+
