@@ -242,3 +242,67 @@ public class PrepareStatementDemo {
 
 }
 ======================================================================================================================
+
+
+package JdbcDemo;
+import java.sql.*;
+import java.util.*;
+public class TrancMngt {
+   public static void main(String[] args) throws Exception {
+	   DBConnection dbcon = new DBConnection();
+		Connection con = dbcon.getDBConnection();
+		if(con != null) {
+			System.out.println("connection success");
+		}
+		Scanner scanner = new Scanner(System.in);
+		Statement st = con.createStatement();
+		con.setAutoCommit(false);
+		System.out.println("enter destination account");
+		int destAcc = scanner.nextInt();
+		
+		System.out.println("enter source account");
+		int srcAcc = scanner.nextInt();
+		
+		System.out.println("enter amount to transfer");
+		double amount = scanner.nextDouble();
+		
+		
+		String debitQuery = "update accounts set accBal=accBal-"+amount+"where accNo="+srcAcc;
+		st.addBatch(debitQuery);
+		
+		String  creditQuery = "update accounts set accBal=accBal+"+amount+"where accNo="+destAcc;
+		st.addBatch(creditQuery);
+		
+		int[] x = st.executeBatch();
+		for(int i : x) {
+			System.out.println(i+" ");
+		}
+		boolean flag= false;
+		
+		for(int i =0; i < x.length;i++) {
+			if(x[i]==0) {
+				flag=true;
+			}
+		}
+		
+		if(flag) {
+			con.rollback();
+			System.out.println("transfer roll back to original state");
+		}
+		else {
+			con.commit();
+			System.out.println("transaction commit");
+		}
+		
+		ResultSet rs = st.executeQuery("select * from accounts");
+		
+		while(rs.next()) {
+			System.out.println(rs.getInt(1)+" "+rs.getString(2)+" "+rs.getDouble(3));
+		}
+				
+		con.close();
+	
+}
+   }
+
+==========================================================================================
