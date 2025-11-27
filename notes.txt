@@ -138,5 +138,42 @@ public class JdbcSample {
 
 ==================================================================================================
 
-Q4.
+Q4.  BATCH
+
+
+package JdbcDemo;
+import java.sql.*;
+public class BatchStatement {
+  public static void main(String[] args) throws Exception {
+	DBConnection dbcon = new DBConnection();
+	Connection con = dbcon.getDBConnection();
+	if(con != null) {
+		System.out.println("connection succes");
+	}
+	Statement st = con.createStatement();
+	String iq = "insert into students values(3,'ms','dhoni'),(4,'ravidra','jadeja'),(5,'ravi','ashwin')";
+	st.addBatch(iq);
+	
+	String uq ="update students  set first_name='ajay' where id=4";
+	st.addBatch(uq);
+	
+	
+	String dq = "delete from students where first_name='ravi'";
+	st.addBatch(dq);
+	
+	int[] x = st.executeBatch();
+	
+	for(int i : x) {
+		System.out.println(i);
+	}
+	
+	ResultSet rs =st.executeQuery("select * from students");
+	
+	while(rs.next()) {
+		System.out.println(rs.getInt(1)+" "+rs.getString(2)+" "+rs.getString(2));
+	}
+	con.close();
+}
+}
+=============================================================================================================================
 
