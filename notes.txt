@@ -176,4 +176,69 @@ public class BatchStatement {
 }
 }
 =============================================================================================================================
+Q5 . PreparedStatement
 
+
+
+package JdbcDemo;
+import java.sql.*;
+import java.util.*;
+public class PrepareStatementDemo {
+
+	public static void main(String[] args) throws Exception {
+		DBConnection dbcon = new DBConnection();
+		Connection con  = dbcon.getDBConnection();
+		
+		
+		Scanner scanner = new Scanner(System.in);
+		String query = "insert into students(id,first_name,last_name) values(?,?,?)";
+		
+		PreparedStatement pst = con.prepareStatement(query);
+		
+		//1 .insert
+		System.out.print("enter id :");
+		int _id =  scanner.nextInt();
+		System.out.print("enter first name :");
+		String fname = scanner.next();
+		System.out.print("enter last name :");
+		String lname = scanner.next();
+		
+		pst.setInt(1, _id);
+	    pst.setString(2, fname);
+	    pst.setString(3, lname);
+	    
+	    
+	    pst.executeUpdate();
+	    
+		
+		//2.update
+		PreparedStatement ps = con.prepareStatement(
+			    "UPDATE students SET first_name = ? WHERE id = ?"
+			);
+		ps.setString(1, "rohitt");
+		ps.setInt(2, 1);
+		ps.executeUpdate();
+
+		//3.delete
+		PreparedStatement ps = con.prepareStatement(
+			    "DELETE FROM students WHERE id = ?"
+			);
+		ps.setInt(1, 1);
+		ps.executeUpdate();
+
+
+		//4.select
+		PreparedStatement ps = con.prepareStatement(
+			    "SELECT * FROM students WHERE first_name = ?"
+			);
+		ps.setString(1, "ajay");
+		ResultSet rs = ps.executeQuery();
+
+	    
+	    while(rs.next()) {
+	    	System.out.println(rs.getInt(1)+" "+rs.getString(2)+" "+rs.getString(3));
+	    }
+	}
+
+}
+======================================================================================================================
